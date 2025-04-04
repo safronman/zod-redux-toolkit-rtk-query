@@ -16,11 +16,13 @@ export const domainTaskSchema = z.object({
 
 export type DomainTask = z.infer<typeof domainTaskSchema>
 
-export type GetTasksResponse = {
-  error: string | null
-  totalCount: number
-  items: DomainTask[]
-}
+export const getTasksSchema = z.object({
+  error: z.string(),
+  totalCount: z.number().int().positive(),
+  items: domainTaskSchema.array(),
+})
+
+export type GetTasksResponse = z.infer<typeof getTasksSchema>
 
 export type UpdateTaskModel = {
   description: string | null

@@ -16,7 +16,6 @@ export const todolistsSlice = createAppSlice({
       async (_, { dispatch, rejectWithValue }) => {
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
-          debugger
           const res = await todolistsApi.getTodolists()
           dispatch(setAppStatusAC({ status: "succeeded" }))
           return { todolists: res.data }
