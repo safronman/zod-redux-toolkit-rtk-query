@@ -1,6 +1,7 @@
 import { setAppStatusAC } from "@/app/app-slice"
 import type { RootState } from "@/app/store"
 import { ResultCode } from "@/common/enums"
+import { defaultResponseSchema } from "@/common/types"
 import { catchErrorHandler, createAppSlice, handleServerAppError } from "@/common/utils"
 import { tasksApi } from "@/features/todolists/api/tasksApi"
 import {
@@ -75,6 +76,7 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await tasksApi.deleteTask(payload)
+          defaultResponseSchema.parse(res.data) // 💎 ZOD
           if (res.data.resultCode === ResultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
             return payload
