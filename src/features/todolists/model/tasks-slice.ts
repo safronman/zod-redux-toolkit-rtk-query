@@ -3,7 +3,12 @@ import type { RootState } from "@/app/store"
 import { ResultCode } from "@/common/enums"
 import { catchErrorHandler, createAppSlice, handleServerAppError } from "@/common/utils"
 import { tasksApi } from "@/features/todolists/api/tasksApi"
-import { type DomainTask, getTasksSchema, type UpdateTaskModel } from "@/features/todolists/api/tasksApi.types"
+import {
+  type DomainTask,
+  getTasksSchema,
+  taskOperationResponseSchema,
+  type UpdateTaskModel,
+} from "@/features/todolists/api/tasksApi.types"
 import { createTodolistTC, deleteTodolistTC } from "./todolists-slice"
 
 export const tasksSlice = createAppSlice({
@@ -46,6 +51,7 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await tasksApi.createTask(payload)
+          taskOperationResponseSchema.parse(res.data) // 💎 ZOD
           if (res.data.resultCode === ResultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
             return { task: res.data.data.item }
@@ -118,6 +124,7 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await tasksApi.updateTask({ todolistId, taskId, model })
+          taskOperationResponseSchema.parse(res.data) // 💎 ZOD
           if (res.data.resultCode === ResultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
             return { task: res.data.data.item }
