@@ -19,7 +19,7 @@ export type DomainTask = z.infer<typeof domainTaskSchema>
 
 export const getTasksSchema = z.object({
   error: z.string().nullable(),
-  totalCount: z.number().int().positive(),
+  totalCount: z.number().int().nonnegative(),
   items: domainTaskSchema.array(),
 })
 
