@@ -1,19 +1,10 @@
 import { ResultCode } from "@/common/enums"
 import { z } from "zod"
 
-export const fieldErrorSchema = z.object({
+const fieldErrorSchema = z.object({
   error: z.string(),
   field: z.string(),
 })
-
-type FieldError = z.infer<typeof fieldErrorSchema>
-
-export type BaseResponse<T = {}> = {
-  data: T
-  resultCode: number
-  messages: string[]
-  fieldsErrors: FieldError[]
-}
 
 export const baseResponseSchema = <T extends z.ZodTypeAny>(schema: T) =>
   z.object({
