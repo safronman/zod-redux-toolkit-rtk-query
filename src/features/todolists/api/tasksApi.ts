@@ -1,7 +1,13 @@
 import { baseApi } from "@/app/baseApi"
 import { PAGE_SIZE } from "@/common/constants"
 import type { DefaultResponse } from "@/common/types"
-import type { GetTasksResponse, TaskOperationResponse, UpdateTaskModel } from "./tasksApi.types"
+import { z } from "zod"
+import {
+  type GetTasksResponse,
+  getTasksSchema,
+  type TaskOperationResponse,
+  type UpdateTaskModel,
+} from "./tasksApi.types"
 
 export const tasksApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -10,6 +16,17 @@ export const tasksApi = baseApi.injectEndpoints({
         url: `todo-lists/${todolistId}/tasks`,
         params: { ...params, count: PAGE_SIZE },
       }),
+      transformResponse: (res: GetTasksResponse) => {
+        try {
+          getTasksSchema.parse(res) // 💎 ZOD
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            console.table(error.issues)
+            // dispatch(setAppErrorAC({ error: "Zod error. Смотри консоль" }))
+          }
+        }
+        return res
+      },
       providesTags: (_res, _err, { todolistId }) => [{ type: "Task", id: todolistId }],
     }),
     addTask: build.mutation<TaskOperationResponse, { todolistId: string; title: string }>({
