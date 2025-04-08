@@ -1,7 +1,12 @@
 import { baseApi } from "@/app/baseApi"
 import { PAGE_SIZE } from "@/common/constants"
 import type { DefaultResponse } from "@/common/types"
-import { type GetTasksResponse, type TaskOperationResponse, type UpdateTaskModel } from "./tasksApi.types"
+import {
+  type GetTasksResponse,
+  getTasksSchema,
+  type TaskOperationResponse,
+  type UpdateTaskModel,
+} from "./tasksApi.types"
 
 export const tasksApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -10,6 +15,7 @@ export const tasksApi = baseApi.injectEndpoints({
         url: `todo-lists/${todolistId}/tasks`,
         params: { ...params, count: PAGE_SIZE },
       }),
+      extraOptions: { dataSchema: getTasksSchema },
       providesTags: (_res, _err, { todolistId }) => [{ type: "Task", id: todolistId }],
     }),
     addTask: build.mutation<TaskOperationResponse, { todolistId: string; title: string }>({
