@@ -3,7 +3,6 @@ import { baseResponseSchema } from "@/common/types"
 import { z } from "zod"
 
 export const domainTaskSchema = z.object({
-  deadline: z.string(),
   description: z.string().nullable(),
   startDate: z.string().nullable(),
   addedDate: z.string().datetime({ local: true }),

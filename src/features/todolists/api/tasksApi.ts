@@ -1,10 +1,11 @@
 import { baseApi } from "@/app/baseApi"
 import { PAGE_SIZE } from "@/common/constants"
-import type { DefaultResponse } from "@/common/types"
+import { type DefaultResponse, defaultResponseSchema } from "@/common/types"
 import {
   type GetTasksResponse,
   getTasksSchema,
   type TaskOperationResponse,
+  taskOperationResponseSchema,
   type UpdateTaskModel,
 } from "./tasksApi.types"
 
@@ -24,6 +25,7 @@ export const tasksApi = baseApi.injectEndpoints({
         method: "POST",
         body: { title },
       }),
+      extraOptions: { dataSchema: taskOperationResponseSchema },
       invalidatesTags: (_res, _err, { todolistId }) => [{ type: "Task", id: todolistId }],
     }),
     removeTask: build.mutation<DefaultResponse, { todolistId: string; taskId: string }>({
@@ -31,6 +33,7 @@ export const tasksApi = baseApi.injectEndpoints({
         url: `todo-lists/${todolistId}/tasks/${taskId}`,
         method: "DELETE",
       }),
+      extraOptions: { dataSchema: defaultResponseSchema },
       invalidatesTags: (_res, _err, { todolistId }) => [{ type: "Task", id: todolistId }],
     }),
     updateTask: build.mutation<TaskOperationResponse, { todolistId: string; taskId: string; model: UpdateTaskModel }>({
@@ -39,6 +42,7 @@ export const tasksApi = baseApi.injectEndpoints({
         method: "PUT",
         body: model,
       }),
+      extraOptions: { dataSchema: taskOperationResponseSchema },
       async onQueryStarted({ todolistId, taskId, model }, { dispatch, queryFulfilled, getState }) {
         const cachedArgsForQuery = tasksApi.util.selectCachedArgsForQuery(getState(), "getTasks")
 
